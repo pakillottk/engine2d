@@ -1,0 +1,14 @@
+# SDL2 ignores
+vendor/SDL2/*
+!vendor/SDL2/x86/
+!vendor/SDL2/x64/
+!vendor/SDL2/include/
+vendor/SDL2/**/bin/sdl2-config
+vendor/SDL2/**/share
+vendor/SDL2/**/lib/cmake
+vendor/SDL2/**/lib/pkgconfig
+vendor/SDL2/**/lib/*.la
+vendor/SDL2/**/lib/libSDL2_test.a
+
+# project specific
+build
