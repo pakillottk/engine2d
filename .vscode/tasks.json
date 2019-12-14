@@ -19,17 +19,16 @@
         },
         {
             "type": "shell",
-            "label": "g++.exe build active file",
-            "command": "C:\\MinGW\\bin\\g++.exe",
-            "args": [
-                "-g",
-                "${file}",
-                "-o",
-                "${fileDirname}\\${fileBasenameNoExtension}.exe"
-            ],
+            "label": "build_app.bat",
+            "command": ".\\build_app.bat",
+            "args": [],
             "options": {
-                "cwd": "C:\\MinGW\\bin"
-            }
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": "build"
         }
     ]
 }

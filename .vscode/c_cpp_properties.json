@@ -4,12 +4,11 @@
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}/**/",
+                "${workspaceFolder}/engine2d/include",
                 "${workspaceFolder}/vendor/SDL2/include/"
             ],
             "defines": [
-                "_DEBUG",
-                "UNICODE",
-                "_UNICODE"
+                "_DEBUG"
             ],
             "compilerPath": "C:\\MinGW\\bin\\gcc.exe",
             "cStandard": "c11",
