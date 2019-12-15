@@ -8,7 +8,8 @@
                 "${workspaceFolder}/vendor/SDL2/include/"
             ],
             "defines": [
-                "_DEBUG"
+                "_DEBUG",
+                "HOT_RELOAD=1"
             ],
             "compilerPath": "C:\\MinGW\\bin\\gcc.exe",
             "cStandard": "c11",
