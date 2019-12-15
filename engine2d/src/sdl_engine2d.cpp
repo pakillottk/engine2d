@@ -4,9 +4,10 @@
 #include <math.h>
 #include <SDL2/SDL.h>
 #include "../include/engine2d/application2d.h"
-#include "engine2d_sdl.h"
+#include "sdl_engine2d.h"
 #include "engine2d_rect.cpp"
 #include "engine2d_sprites.cpp"
+#include "engine2d_layer.cpp"
 using namespace Engine2D;
 
 internal u32* mapRgbaToPixelFormat(SDL_PixelFormat *format, ColorRGBA32 *colors, u32 colorCount)
@@ -100,46 +101,17 @@ inline bool8 updateInput(SDLContext *context, EngineState *state, UserInput *inp
 
 inline void render(SDLContext *context, EngineState *state, Size *screenSize)
 {
-    // TODO(pgm): for now we just use one layer
-    ScreenRect viewport { 0, 0, screenSize->width, screenSize->height };
-    if( state->layers[0].attributes.patternBackground )
+    // blend the layer pixels into the framebuffer
+    ColorRGBA32 *framebuffer = (ColorRGBA32*)calloc(screenSize->width * screenSize->height, sizeof(ColorRGBA32));
+    for(i32 i = 0; i < state->layerCount; ++i)
     {
-        u32 *colors = mapRgbaToPixelFormat(
-                        context->format, 
-                        state->layers[0].backgroundPattern,
-                        state->layers[0].patternSize.width * state->layers[0].patternSize.height
-                    );
-        drawScreenRectPattern( 
-            viewport, 
-            *screenSize, 
-            colors,  
-            state->layers[0].patternSize,
-            context->screen_buffer
-        );
-        free(colors);
+        renderLayer( &state->layers[i], framebuffer, screenSize, &state->visibleRegion );
     }
-    else
-    {
-        u32 bgColor = SDL_MapRGBA(
-                        context->format,  
-                        state->layers[0].backgroundColor.r, 
-                        state->layers[0].backgroundColor.g, 
-                        state->layers[0].backgroundColor.b, 
-                        state->layers[0].backgroundColor.a
-                    );
-        drawScreenRect( viewport, *screenSize, bgColor, context->screen_buffer );
-    }
-    
 
-    for(u32 i = 0; i < state->layers[0].spriteCount; ++i)
-    {
-        Sprite *sprite = &state->layers[0].sprites[i];
-        ScreenRect rect = spriteScreenRect( sprite );
-        ScreenRect projectedRect = mapScreenRectToViewport(  rect, *screenSize, state->visibleRegion );
-        u32 *colors = mapRgbaToPixelFormat(context->format, sprite->pixels, sprite->size.width * sprite->size.height);
-        drawScreenRect(projectedRect, *screenSize, colors, context->screen_buffer );
-        free(colors);
-    }
+    // translate the framebuffer to the real u32 buffer
+    u32 *mappedFramebuffer = mapRgbaToPixelFormat(context->format, framebuffer, screenSize->width * screenSize->height);
+    memcpy( context->screen_buffer, mappedFramebuffer, sizeof(u32) * screenSize->width * screenSize->height );
+    free(mappedFramebuffer);
 
     SDL_UpdateTexture(context->screen, NULL, context->screen_buffer, screenSize->width * sizeof(u32));
     SDL_RenderClear(context->renderer);
