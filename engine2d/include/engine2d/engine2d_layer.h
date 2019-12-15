@@ -31,6 +31,18 @@ namespace Engine2D
         Sprite sprites[MAX_SPRITE_COUNT];
         u32 spriteCount;
     };
+
+    inline void releaseLayer(Layer *layer)
+    {
+        if( layer->attributes.patternBackground )
+        {
+            free(layer->backgroundPattern);
+        }
+        for( u32 i = 0; i < layer->spriteCount; ++i )
+        {
+            free(layer->sprites[i].pixels);
+        }
+    }
 }
 
 #endif // ENGINE2D_LAYER_H

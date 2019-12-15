@@ -1,6 +1,5 @@
 #include "../include/engine2d/engine2d_types.h"
 using namespace Engine2D;
-#define internal static
 
 #define NORMALIZE_TO_RANGE(value, min, max) ( (value) - (min) ) / ( (max) - (min) )
 

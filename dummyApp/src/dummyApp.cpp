@@ -4,8 +4,6 @@
 #include <engine2d/application2d.h>
 using namespace Engine2D;
 
-#define internal static
-
 ENGINE2D_INITIALIZE_APPLICATION(Engine2D_InitializeApplication)
 {
     strcpy(state->appTitle, "DummyApp"); 

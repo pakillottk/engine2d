@@ -2,6 +2,9 @@
 #ifndef ENGINE2D_TYPES_H
 #define ENGINE2D_TYPES_H
 
+#define internal static
+#define keep_alive_var static
+
 #include <stdint.h>
 
 typedef uint8_t bool8;
