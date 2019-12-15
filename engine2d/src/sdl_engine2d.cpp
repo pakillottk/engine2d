@@ -1,7 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <math.h>
 #include <SDL2/SDL.h>
 #include "../include/engine2d/application2d.h"
 #include "sdl_engine2d.h"
@@ -35,7 +31,7 @@ internal SDLContext makeSDLContext(EngineState *state, Size *screenSize)
         screenSize->height, 
         SDL_WINDOW_OPENGL
     );
-    context.renderer = SDL_CreateRenderer(context.window, 0, SDL_RENDERER_SOFTWARE);
+    context.renderer = SDL_CreateRenderer(context.window, 0, SDL_RENDERER_ACCELERATED);
     context.format = SDL_AllocFormat(SDL_PIXELFORMAT_RGB888);
     context.screen = SDL_CreateTexture(
                             context.renderer, 

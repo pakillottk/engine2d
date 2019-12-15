@@ -1,8 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <string.h>
-#include <math.h>
 #include <windows.h>
 
 #define SCREEN_WIDTH 800
@@ -107,8 +102,6 @@ internal bool8 attemptHotReload(const char * targetFilename, AppCode &app)
 // TODO(pgm): For now is hard coded. Could come in args
 keep_alive_var const char *appDll = "App.dll";
 
-// NOTE(pgm): This is just a sort of a TestApp. In the end all that will happen it's that we'll have these things called by an external
-// app
 int WINAPI WinMain(HINSTANCE hInstance,
                    HINSTANCE hPrevInstance,
                    LPSTR lpCmdLine,
