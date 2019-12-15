@@ -23,19 +23,33 @@ internal void renderLayer(Layer *layer, ColorRGBA32 *buffer, Size *screenSize, S
     
     if( layer->attributes.textLayer )
     {
-        for(u32 i = 0; i < layer->textsCount; ++i)
+        for( u32 i = 0; i < layer->textsCount; ++i )
         {
             renderText( &layer->font, &layer->texts[i], screenSize, buffer );
         }
     }
     else
     {
-        for(u32 i = 0; i < layer->spriteCount; ++i)
+        for( u32 i = 0; i < layer->spriteCount; ++i )
         {
             Sprite *sprite = &layer->sprites[i];
             ScreenRect rect = spriteScreenRect( sprite );
             ScreenRect projectedRect = mapScreenRectToViewport( rect, *screenSize, *visibleRegion );
             drawScreenRect( projectedRect, *screenSize, sprite->pixels, buffer );
+        }
+
+        // NOTE(pgm) DEBUG ONLY
+        keep_alive_var ColorRGBA32 collisionColor { 0xff, 0x0, 0x0, 0xff }; 
+        for( u32 i = 0; i < layer->collisions.collisionCount; ++i )
+        {
+            ScreenRect colRect 
+            {
+                layer->collisions.CollisionData[i].screenPosition.x,
+                layer->collisions.CollisionData[i].screenPosition.y,
+                1,
+                1
+            };
+            drawScreenRect( colRect, *screenSize, collisionColor, buffer );
         }
     }
     

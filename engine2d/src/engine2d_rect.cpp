@@ -195,3 +195,15 @@ ScreenRect mapNormalizedRect(Rect &rect, const Size &screenSize)
 
     return(result);
 }
+
+ScreenRect spriteScreenRect(Sprite *sprite)
+{
+    ScreenRect rect 
+    { 
+        sprite->worldPosition.x, 
+        sprite->worldPosition.y, 
+        sprite->size.width, 
+        sprite->size.height 
+    };
+    return(rect);
+}

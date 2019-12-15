@@ -1,7 +1,8 @@
+#include "../include/engine2d/application2d.h"
 #include <windows.h>
 
-#define SCREEN_WIDTH 800
-#define SCREEN_HEIGHT 600
+#define SCREEN_WIDTH 640
+#define SCREEN_HEIGHT 480
 #ifndef NULL
     #define NULL 0
 #endif
@@ -12,8 +13,9 @@
     #define TRUE 1
 #endif
 
-#include "../include/engine2d/application2d.h"
 #include "sdl_engine2d.cpp"
+#include "../include/engine2d/engine2d_collision.h"
+#include "engine2d_collision.cpp"
 
 internal FILETIME Win32_GetLastWriteTime(const char *filename)
 {
@@ -114,8 +116,10 @@ int WINAPI WinMain(HINSTANCE hInstance,
     EngineState state;
     strcpy(state.appTitle, "engine2d");
     appCode.initializeApp(&state);
-
+    
+    // TODO(pgm) Handle window resizes
     SDLContext context = makeSDLContext(&state, &screenSize);
+    Sprite **layerSpriteMap = (Sprite**)calloc(screenSize.width * screenSize.height, sizeof(Sprite*));
     bool8 exit = false;
     while( true )
     {
@@ -123,19 +127,38 @@ int WINAPI WinMain(HINSTANCE hInstance,
             attemptHotReload(appDll, appCode);
         #endif
 
+
+        // check for user inputs
         exit = updateInput(&context, &state, &input);
         if( exit )
         {
             break;
         }
+        // update the state
         appCode.updateApp(context.deltaTime, context.totalTime, &state, &input);
+        
+        // check for collisions
+        for( u32 i = 0; i < state.layerCount; ++i )
+        {
+            if( state.layers[i].attributes.hidden || state.layers[i].attributes.textLayer )
+            {
+                continue;
+            }
+
+            memset( layerSpriteMap, 0, sizeof(Sprite*)*screenSize.width*screenSize.height );
+            free(state.layers[i].collisions.CollisionData);
+            state.layers[i].collisions = calculateCollisions( &state.layers[i], layerSpriteMap, &screenSize, &state.visibleRegion );
+            // TODO(pgm) let the app handle collisions?
+        }
+        // render the new state
         render(&context, &state, &screenSize);
     }
     
+    releaseSDLContext(&context);
     for( u32 i = 0; i < state.layerCount; ++i )
     {
         releaseLayer( &state.layers[i] );
     }
-    releaseSDLContext(&context);
+    free(layerSpriteMap);
     return(0);
 }

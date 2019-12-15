@@ -20,4 +20,6 @@ Engine2D::ScreenRect mapRectToScreen(const Engine2D::Rect &rect, const Engine2D:
 Engine2D::ScreenRect mapScreenRectToViewport(const Engine2D::ScreenRect &rect, const Engine2D::Size &screenSize, const Engine2D::ScreenRect &gameRect);
 Engine2D::ScreenRect mapNormalizedRect(Engine2D::Rect &rect, const Engine2D::Size &screenSize);
 
+Engine2D::ScreenRect spriteScreenRect(Engine2D::Sprite *sprite);
+
 #endif // ENGINE2D_PROJECT_RECT_H

@@ -9,15 +9,12 @@
 #include "engine2d_layer.cpp"
 using namespace Engine2D;
 
-internal u32* mapRgbaToPixelFormat(SDL_PixelFormat *format, ColorRGBA32 *colors, u32 colorCount)
+internal void mapRgbaToPixelFormat(SDL_PixelFormat *format, ColorRGBA32 *colors, u32 colorCount, u32 *buffer)
 {
-    u32 *mappedColors = (u32*)malloc(colorCount * sizeof(u32));
     for(u32 i = 0; i < colorCount; ++i)
     {
-        mappedColors[i] = SDL_MapRGBA(format, colors[i].r, colors[i].g, colors[i].b, colors[i].a);
+        buffer[i] = SDL_MapRGBA(format, colors[i].r, colors[i].g, colors[i].b, colors[i].a);
     }
-
-    return mappedColors;
 }
 
 internal SDLContext makeSDLContext(EngineState *state, Size *screenSize)   
@@ -44,8 +41,9 @@ internal SDLContext makeSDLContext(EngineState *state, Size *screenSize)
                             screenSize->width, 
                             screenSize->height 
                         );
+    context.framebuffer = (ColorRGBA32*)calloc(screenSize->width * screenSize->height, sizeof(ColorRGBA32));
     context.screen_buffer = (u32*)calloc(screenSize->width * screenSize->height, sizeof(u32));
-    
+
     return(context); 
 }
 
@@ -103,16 +101,13 @@ inline void render(SDLContext *context, EngineState *state, Size *screenSize)
 {
     // TODO(pgm)
     // blend the layer pixels into the framebuffer
-    ColorRGBA32 *framebuffer = (ColorRGBA32*)calloc(screenSize->width * screenSize->height, sizeof(ColorRGBA32));
+    memset(context->framebuffer, 0, sizeof(ColorRGBA32)*screenSize->width*screenSize->height);
     for(i32 i = 0; i < state->layerCount; ++i)
     {
-        renderLayer( &state->layers[i], framebuffer, screenSize, &state->visibleRegion );
+        renderLayer( &state->layers[i], context->framebuffer, screenSize, &state->visibleRegion );
     }
-
     // translate the framebuffer to the real u32 buffer
-    u32 *mappedFramebuffer = mapRgbaToPixelFormat(context->format, framebuffer, screenSize->width * screenSize->height);
-    memcpy( context->screen_buffer, mappedFramebuffer, sizeof(u32) * screenSize->width * screenSize->height );
-    free(mappedFramebuffer);
+    mapRgbaToPixelFormat(context->format, context->framebuffer, screenSize->width * screenSize->height, context->screen_buffer);
 
     SDL_UpdateTexture(context->screen, NULL, context->screen_buffer, screenSize->width * sizeof(u32));
     SDL_RenderClear(context->renderer);
@@ -131,5 +126,6 @@ internal void releaseSDLContext(SDLContext *context)
     SDL_FreeFormat(context->format);
     TTF_Quit();
     SDL_Quit();
+    free(context->framebuffer);
     free(context->screen_buffer);
 }

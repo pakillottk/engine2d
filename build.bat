@@ -7,7 +7,7 @@ set libs=-lmingw32 -L"..\vendor\SDL2\x86\lib" -lSDL2main -lSDL2 -L"..\vendor\SDL
 call build_app.bat
 pushd ".\build"
     ::compilation
-    g++ -ggdb %preprocessor_macros% %include_directories% "..\engine2d\src\mingw_engine2d.cpp" %libs%  -o "engine2d"
+    g++ -ggdb -mwindows %preprocessor_macros% %include_directories% "..\engine2d\src\mingw_engine2d.cpp" %libs%  -o "engine2d"
     ::copy the required dlls
     copy "..\vendor\SDL2\x86\bin\SDL2.dll" ".\"
     copy "..\vendor\SDL2_TTF\x86\bin\*.dll" ".\"

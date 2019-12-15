@@ -11,6 +11,7 @@ struct SDLContext
     SDL_Renderer *renderer;
     SDL_PixelFormat *format;
     SDL_Texture *screen;
+    Engine2D::ColorRGBA32 *framebuffer;
     u32 *screen_buffer;
     bool8 keypressed;
     real32 deltaTime;
