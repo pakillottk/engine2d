@@ -19,6 +19,19 @@
         },
         {
             "type": "shell",
+            "label": "build_libEngine2d.bat",
+            "command": ".\\build_libEngine2d.bat",
+            "args": [],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": "build"
+        },
+        {
+            "type": "shell",
             "label": "build_app.bat",
             "command": ".\\build_app.bat",
             "args": [],

@@ -1,4 +1,5 @@
 #include "../include/engine2d/application2d.h"
+#include "engine2d.cpp"
 #include <windows.h>
 
 #define SCREEN_WIDTH 640
@@ -116,7 +117,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
     UserInput input;
     input.arrows.directions = 0;
     EngineState state;
-    strcpy(state.appTitle, "engine2d");
+    initializeEngineState(&state);
     appCode.initializeApp(&state);
     
     // TODO(pgm) Handle window resizes

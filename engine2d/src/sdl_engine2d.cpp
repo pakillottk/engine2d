@@ -111,7 +111,7 @@ inline void render(SDLContext *context, EngineState *state, Size *screenSize)
 
     SDL_UpdateTexture(context->screen, NULL, context->screen_buffer, screenSize->width * sizeof(u32));
     SDL_RenderClear(context->renderer);
-    SDL_RenderCopy(context->renderer, context->screen, NULL, NULL);
+    SDL_RenderCopy(context->renderer, context->screen, NULL, NULL); 
     SDL_RenderPresent(context->renderer);
 
     // TODO(pgm) calculate delta time and so on

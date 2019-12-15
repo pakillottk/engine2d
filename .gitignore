@@ -20,3 +20,5 @@ vendor/SDL2_TTF/**/lib/*.dll.a
 
 # project specific
 build
+libEngine2d/obj
+libEngine2d/lib

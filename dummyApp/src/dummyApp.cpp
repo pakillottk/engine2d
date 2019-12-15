@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <engine2d/application2d.h>
+#include <Engine2D/Engine2D.h>
 using namespace Engine2D;
 
 internal void makeTexts(Layer *layer)
@@ -43,7 +44,7 @@ internal void makeCollidingSprites( EngineState *state )
 ENGINE2D_INITIALIZE_APPLICATION(Engine2D_InitializeApplication)
 {
     strcpy(state->appTitle, "DummyApp"); 
-    state->visibleRegion = { 0, 0, 800, 600 };
+    state->visibleRegion = { 0, 0, 640, 480 };
 
     // state->layers[0].backgroundPattern = (ColorRGBA32*)calloc(100, sizeof(ColorRGBA32));
     // for(u32 i = 0; i < 100; ++i)
@@ -66,9 +67,14 @@ ENGINE2D_INITIALIZE_APPLICATION(Engine2D_InitializeApplication)
     // state->layers[0].sprites[0].worldPosition = { 0, 0 };
 
     state->layers[0].backgroundColor = { 0x66, 0x66, 0x66, 0xff };
-    state->layerCount = 2;
-    makeCollidingSprites(state);
-    makeTexts(&state->layers[1]);
+    state->layerCount = 1;
+    state->layers[0].spriteCount = 1;
+    state->layers[0].sprites[0].worldPosition = { 0, 0 };
+    loadSpriteFromImg("data/minichar.png", &state->layers[0].sprites[0]);
+
+    // state->layerCount = 2;
+    // makeCollidingSprites(state);
+    // makeTexts(&state->layers[1]);
 }
 
 ENGINE2D_APPLICATION_UPDATE(Engine2D_ApplicationUpdate)

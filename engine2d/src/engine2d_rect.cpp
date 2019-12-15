@@ -3,6 +3,16 @@ using namespace Engine2D;
 
 #define NORMALIZE_TO_RANGE(value, min, max) ( (value) - (min) ) / ( (max) - (min) )
 
+internal u32 blendByAlpha(u32 c1, u32 c2)
+{
+    u8 a1 = 0xff & c1;
+    u8 a2 = 0xff & c2;
+
+    u32 res = c1 * a1 + c2 * a2;
+    res |= 0x000000ff;
+    return(res);
+}
+
 void drawScreenRect(const ScreenRect &rect, const Size &screenSize, ColorRGBA32 color, ColorRGBA32 *buffer)
 {
     int x, y;
@@ -114,7 +124,7 @@ void drawScreenRectMasked(const ScreenRect &rect, const Size &screenSize, const 
             pixelColor.b = color.b & maskValue.b;
             pixelColor.a = color.a & maskValue.a;
             // TODO(pgm): Fake blending
-            if( pixelColor.a != 0x0 )
+            // if( pixelColor.a != 0x0 )
             {
                 buffer[ (y * screenSize.width) + x ] = pixelColor;
             }
@@ -179,8 +189,11 @@ void scaleRect(Rect &rect, real32 scale)
 ScreenRect mapRectToScreen(const Rect &rect, const Size &screenSize, const Rect &gameRect)
 {
     ScreenRect result;
-    result.width = NORMALIZE_TO_RANGE(rect.width, 0, gameRect.width) * screenSize.width;
-    result.height = NORMALIZE_TO_RANGE(rect.width, 0, gameRect.height) * screenSize.height;
+    // TODO(pgm) no resizes for now
+    // result.width = NORMALIZE_TO_RANGE(rect.width, 0, gameRect.width) * screenSize.width;
+    // result.height = NORMALIZE_TO_RANGE(rect.width, 0, gameRect.height) * screenSize.height;
+    result.width = rect.width;
+    result.height = rect.height;
     result.x = NORMALIZE_TO_RANGE(rect.x, gameRect.x, gameRect.x + gameRect.width) * screenSize.width;
     result.y = screenSize.height - result.height - NORMALIZE_TO_RANGE(rect.y, gameRect.y, gameRect.y + gameRect.height) * screenSize.height;
 
