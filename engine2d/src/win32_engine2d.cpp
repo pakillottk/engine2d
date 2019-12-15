@@ -111,6 +111,8 @@ int WINAPI WinMain(HINSTANCE hInstance,
 {
     AppCode appCode = loadApp(appDll);
     Size screenSize { SCREEN_WIDTH, SCREEN_HEIGHT };
+    
+    // TODO(pgm) a shared file should exist where these are initialized correctly
     UserInput input;
     input.arrows.directions = 0;
     EngineState state;
