@@ -1,8 +1,11 @@
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_TTF.h>
 #include "../include/engine2d/application2d.h"
 #include "sdl_engine2d.h"
+#include "engine2d_project_rect.h"
 #include "engine2d_rect.cpp"
 #include "engine2d_sprites.cpp"
+#include "sdl_engine2d_text.cpp"
 #include "engine2d_layer.cpp"
 using namespace Engine2D;
 
@@ -22,6 +25,7 @@ internal SDLContext makeSDLContext(EngineState *state, Size *screenSize)
     SDLContext context;
 
     SDL_Init(SDL_INIT_VIDEO);
+    TTF_Init();
 
     context.window = SDL_CreateWindow(
         state->appTitle, 
@@ -32,7 +36,7 @@ internal SDLContext makeSDLContext(EngineState *state, Size *screenSize)
         SDL_WINDOW_OPENGL
     );
     context.renderer = SDL_CreateRenderer(context.window, 0, SDL_RENDERER_ACCELERATED);
-    context.format = SDL_AllocFormat(SDL_PIXELFORMAT_RGB888);
+    context.format = SDL_AllocFormat(SDL_PIXELFORMAT_RGBA32);
     context.screen = SDL_CreateTexture(
                             context.renderer, 
                             context.format->format, 
@@ -97,6 +101,7 @@ inline bool8 updateInput(SDLContext *context, EngineState *state, UserInput *inp
 
 inline void render(SDLContext *context, EngineState *state, Size *screenSize)
 {
+    // TODO(pgm)
     // blend the layer pixels into the framebuffer
     ColorRGBA32 *framebuffer = (ColorRGBA32*)calloc(screenSize->width * screenSize->height, sizeof(ColorRGBA32));
     for(i32 i = 0; i < state->layerCount; ++i)
@@ -124,5 +129,7 @@ internal void releaseSDLContext(SDLContext *context)
     SDL_DestroyTexture(context->screen);
     SDL_DestroyRenderer(context->renderer);
     SDL_FreeFormat(context->format);
+    TTF_Quit();
+    SDL_Quit();
     free(context->screen_buffer);
 }

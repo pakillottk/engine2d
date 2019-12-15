@@ -24,7 +24,7 @@ namespace Engine2D
 {
     union ColorRGBA32
     {
-        color_rgba32 color;
+        color_rgba32 color_rgba;
         struct
         {
             byte r;

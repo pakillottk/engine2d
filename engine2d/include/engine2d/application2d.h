@@ -12,7 +12,7 @@ namespace Engine2D
 {
     struct EngineState 
     {
-        char appTitle[1024];
+        char appTitle[MAX_APP_TITLE_LENGTH];
         // TODO(pgm)
         // Size screenSize; 
         ScreenRect visibleRegion;
