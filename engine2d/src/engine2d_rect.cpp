@@ -18,7 +18,11 @@ void drawScreenRect(const ScreenRect &rect, const Size &screenSize, ColorRGBA32 
                 // this pixel it's out of bounds
                 continue;
             }
-            buffer[ (y * screenSize.width) + x ] = color;
+            // TODO(pgm): Fake blending
+            if( color.a != 0x0 )
+            {
+                buffer[ (y * screenSize.width) + x ] = color;
+            }
         }
     }
 }
@@ -38,6 +42,7 @@ void drawScreenRect(const ScreenRect &rect, const Size &screenSize, u32 color, u
                 // this pixel it's out of bounds
                 continue;
             }
+            
             buffer[ (y * screenSize.width) + x ] = color;
         }
     }
@@ -58,7 +63,11 @@ void drawScreenRect(const ScreenRect &rect, const Size &screenSize, ColorRGBA32*
                 // this pixel it's out of bounds
                 continue;
             }
-            buffer[ (y * screenSize.width) + x ] = colors[row * rect.width + col];
+            // TODO(pgm): Fake blending
+            if( colors[row * rect.width + col].a != 0x0 )
+            {
+                buffer[ (y * screenSize.width) + x ] = colors[row * rect.width + col];
+            }
         }
     }
 }
