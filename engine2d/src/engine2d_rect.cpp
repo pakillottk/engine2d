@@ -124,7 +124,7 @@ void drawScreenRectMasked(const ScreenRect &rect, const Size &screenSize, const 
             pixelColor.b = color.b & maskValue.b;
             pixelColor.a = color.a & maskValue.a;
             // TODO(pgm): Fake blending
-            // if( pixelColor.a != 0x0 )
+            if( pixelColor.a != 0x0 )
             {
                 buffer[ (y * screenSize.width) + x ] = pixelColor;
             }

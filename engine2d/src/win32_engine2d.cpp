@@ -116,7 +116,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
     // TODO(pgm) a shared file should exist where these are initialized correctly
     UserInput input;
     input.arrows.directions = 0;
-    EngineState state;
+    EngineState state = {};
     initializeEngineState(&state);
     appCode.initializeApp(&state);
     
@@ -140,19 +140,21 @@ int WINAPI WinMain(HINSTANCE hInstance,
         // update the state
         appCode.updateApp(context.deltaTime, context.totalTime, &state, &input);
         
+        // TODO(pgm) Just for debugging
         // check for collisions
-        for( u32 i = 0; i < state.layerCount; ++i )
-        {
-            if( state.layers[i].attributes.hidden || state.layers[i].attributes.textLayer )
-            {
-                continue;
-            }
+        // for( u32 i = 0; i < state.layerCount; ++i )
+        // {
+        //     if( state.layers[i].attributes.hidden || state.layers[i].attributes.textLayer )
+        //     {
+        //         continue;
+        //     }
 
-            memset( layerSpriteMap, 0, sizeof(Sprite*)*screenSize.width*screenSize.height );
-            free(state.layers[i].collisions.CollisionData);
-            state.layers[i].collisions = calculateCollisions( &state.layers[i], layerSpriteMap, &screenSize, &state.visibleRegion );
-            // TODO(pgm) let the app handle collisions?
-        }
+        //     memset( layerSpriteMap, 0, sizeof(Sprite*)*screenSize.width*screenSize.height );
+        //     free(state.layers[i].collisions.CollisionData);
+        //     state.layers[i].collisions = calculateCollisions( &state.layers[i], layerSpriteMap, &screenSize, &state.visibleRegion );
+        //     // TODO(pgm) let the app handle collisions?
+        // }
+        
         // render the new state
         render(&context, &state, &screenSize);
     }

@@ -4,6 +4,7 @@
 
 #include "engine2d_types.h"
 #include "engine2d_layer.h"
+#include "engine2d_tilemap.h"
 
 #define MAX_APP_TITLE_LENGTH 1024
 #define MAX_LAYER_COUNT 128
@@ -15,7 +16,10 @@ namespace Engine2D
         char appTitle[MAX_APP_TITLE_LENGTH];
         // TODO(pgm)
         // Size screenSize; 
+        
         ScreenRect visibleRegion;
+        Tilemap tilemaps[MAX_TILEMAP_COUNT];
+        u32 tilemapCount;
         Layer layers[MAX_LAYER_COUNT];
         u32 layerCount;
     };
@@ -39,11 +43,13 @@ namespace Engine2D
     };
 }
 
+// TODO(pgm) This shouldn't live here?
 #define ENGINE2D_INITIALIZE_APPLICATION(name) void name(Engine2D::EngineState *state)
 typedef ENGINE2D_INITIALIZE_APPLICATION(engine2d_initializeApplication);
 ENGINE2D_INITIALIZE_APPLICATION(initializeAppStub)
 {}
 
+// TODO(pgm) This shouldn't live here?
 #define ENGINE2D_APPLICATION_UPDATE(name) void name(real32 deltaTime, real32 totalTime, Engine2D::EngineState *state, Engine2D::UserInput *input)
 typedef ENGINE2D_APPLICATION_UPDATE(engine2d_applicationUpdate);
 ENGINE2D_APPLICATION_UPDATE(applicationUpdateStub)

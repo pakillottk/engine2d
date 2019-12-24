@@ -6,7 +6,7 @@
 
 namespace Engine2D
 {
-    bool8 loadSpriteFromImg(const char *imgPath, Sprite *sprite);
+    bool8 loadImage(const char *imgPath, ColorRGBA32** pixels, Size* size);
 };
 
 

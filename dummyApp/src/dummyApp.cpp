@@ -67,21 +67,49 @@ ENGINE2D_INITIALIZE_APPLICATION(Engine2D_InitializeApplication)
     // state->layers[0].sprites[0].worldPosition = { 0, 0 };
 
     state->layers[0].backgroundColor = { 0x66, 0x66, 0x66, 0xff };
-    state->layerCount = 1;
-    state->layers[0].spriteCount = 1;
-    state->layers[0].sprites[0].worldPosition = { 0, 0 };
-    loadSpriteFromImg("data/minichar.png", &state->layers[0].sprites[0]);
+    // state->layerCount = 1;
+    // state->layers[0].spriteCount = 1;
+    // state->layers[0].sprites[0].worldPosition = { 0, 0 };
+    // loadSpriteFromImg("data/test.bmp", &state->layers[0].sprites[0]);
 
     // state->layerCount = 2;
     // makeCollidingSprites(state);
     // makeTexts(&state->layers[1]);
+
+    state->tilemapCount = 1;
+    Tilemap *tilemap = &state->tilemaps[0];
+    loadImage("data/tileset.png", &tilemap->pixels, &tilemap->mapSize);
+    tilemap->tileSize = {32, 32};
+
+    state->layerCount = 3;
+    Layer *layer = &state->layers[0];
+    layer->tilesetId = 0;
+    layer->attributes.useTilemap = true;
+    layer->tileCount = 1;
+    layer->tiles = (TileReference*)calloc( layer->tileCount, sizeof(TileReference) );
+
+    // TileReference *tile = layer->tiles;
+    // for( u32 i = 0; i < 480; ++i )
+    // {
+    //     for( u32 j = 0; j < 640; ++j )
+    //     {
+    //         tile->worldPos = { j*32, i*32 };
+    //         ++tile;
+    //     }
+    // }
+
+    layer = &state->layers[1];
+    layer->spriteCount = 1;
+    loadImage("data/char.png", &layer->sprites[0].pixels, &layer->sprites[0].size);
+
+    makeTexts(&state->layers[2]);
 }
 
 ENGINE2D_APPLICATION_UPDATE(Engine2D_ApplicationUpdate)
 {
-    keep_alive_var u32 speed = 1; 
+    keep_alive_var u32 speed = 3; 
 
-    Sprite *sprite = &state->layers[0].sprites[0];
+    Sprite *sprite = &state->layers[1].sprites[0];
     sprite->worldPosition.x -= input->arrows.left * speed;
     sprite->worldPosition.x += input->arrows.right * speed;
     sprite->worldPosition.y += input->arrows.up * speed;

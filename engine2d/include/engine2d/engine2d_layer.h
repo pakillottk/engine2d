@@ -4,6 +4,7 @@
 
 #include <stdlib.h>
 #include "engine2d_types.h"
+#include "engine2d_tilemap.h"
 #include "engine2d_sprite.h"
 #include "engine2d_text.h"
 #include "engine2d_collision.h"
@@ -14,9 +15,10 @@ namespace Engine2D
 {
     enum LAYER_FLAGS
     {
-        bHidden             = 0b001,
-        bPatternBackground  = 0b010,
-        bTextLayer          = 0b100
+        bHidden             = 0b0001,
+        bPatternBackground  = 0b0010,
+        bTextLayer          = 0b0100,
+        bUseTilemap         = 0b1000
     };
 
     struct Layer
@@ -47,6 +49,13 @@ namespace Engine2D
                 Text texts[MAX_TEXTS_COUNT];
                 u32 textsCount;
             };
+            // tilemap data
+            struct
+            {
+                u32 tilesetId;
+                TileReference *tiles;
+                u32 tileCount;
+            };
         };
         // layer flags
         union 
@@ -57,6 +66,7 @@ namespace Engine2D
                 byte hidden : 1;  
                 byte patternBackground : 1;  
                 byte textLayer : 1;  
+                byte useTilemap : 1;  
             };
         } attributes;
 
@@ -68,6 +78,10 @@ namespace Engine2D
         if( layer->attributes.patternBackground )
         {
             free(layer->backgroundPattern);
+        }
+        if( layer->attributes.useTilemap )
+        {
+            free(layer->tiles);
         }
         if( layer->attributes.textLayer )
         {

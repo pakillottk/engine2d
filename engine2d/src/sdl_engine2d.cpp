@@ -104,7 +104,7 @@ inline void render(SDLContext *context, EngineState *state, Size *screenSize)
     memset(context->framebuffer, 0, sizeof(ColorRGBA32)*screenSize->width*screenSize->height);
     for(i32 i = 0; i < state->layerCount; ++i)
     {
-        renderLayer( &state->layers[i], context->framebuffer, screenSize, &state->visibleRegion );
+        renderLayer( &state->layers[i], context->framebuffer, screenSize, &state->visibleRegion, state->tilemaps, state->tilemapCount );
     }
     // translate the framebuffer to the real u32 buffer
     mapRgbaToPixelFormat(context->format, context->framebuffer, screenSize->width * screenSize->height, context->screen_buffer);
