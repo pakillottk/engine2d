@@ -16,7 +16,6 @@ vendor/SDL2_TTF/*
 !vendor/SDL2_TTF/x64/
 !vendor/SDL2_TTF/include/
 vendor/SDL2_TTF/**/lib/pkgconfig
-vendor/SDL2_TTF/**/lib/*.dll.a
 
 # project specific
 build
