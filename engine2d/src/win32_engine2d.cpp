@@ -14,6 +14,7 @@
     #define TRUE 1
 #endif
 
+#include "win32_engine2d_io.cpp"
 #include "sdl_engine2d.cpp"
 #include "../include/engine2d/engine2d_collision.h"
 #include "engine2d_collision.cpp"

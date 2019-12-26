@@ -1,8 +1,11 @@
 #pragma once
-#ifndef ENGINE2D_PROJECT_RECT_H
-#define ENGINE2D_PROJECT_RECT_H
+#ifndef ENGINE2D_RECT_H
+#define ENGINE2D_RECT_H
 
 #include "../include/engine2d/engine2d_types.h"
+
+bool8 rectOverlaps(Engine2D::Rect *rect1, Engine2D::Rect *rect2);
+bool8 rectOverlaps(Engine2D::ScreenRect *rect1, Engine2D::ScreenRect *rect2);
 
 void drawScreenRect(const Engine2D::ScreenRect &rect, const Engine2D::Size &screenSize, Engine2D::ColorRGBA32 color, Engine2D::ColorRGBA32 *buffer);
 void drawScreenRect(const Engine2D::ScreenRect &rect, const Engine2D::Size &screenSize, u32 color, u32 *buffer);
@@ -22,4 +25,4 @@ Engine2D::ScreenRect mapNormalizedRect(Engine2D::Rect &rect, const Engine2D::Siz
 
 Engine2D::ScreenRect spriteScreenRect(Engine2D::Sprite *sprite);
 
-#endif // ENGINE2D_PROJECT_RECT_H
+#endif // ENGINE2D_RECT_H

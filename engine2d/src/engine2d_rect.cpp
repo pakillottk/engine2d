@@ -1,4 +1,4 @@
-#include "engine2d_project_rect.h"
+#include "engine2d_rect.h"
 using namespace Engine2D;
 
 #define NORMALIZE_TO_RANGE(value, min, max) ( (value) - (min) ) / ( (max) - (min) )
@@ -11,6 +11,35 @@ internal u32 blendByAlpha(u32 c1, u32 c2)
     u32 res = c1 * a1 + c2 * a2;
     res |= 0x000000ff;
     return(res);
+}
+
+internal ColorRGBA32 blendByAlpha(ColorRGBA32 destination, ColorRGBA32 source)
+{
+    ColorRGBA32 result;
+    real32 alpha = real32(source.a)/255.0f;
+    real32 oneMinusAlpha = 1.0f - alpha;
+    result.r = (source.r * alpha) + (oneMinusAlpha * destination.r);
+    result.g = (source.g * alpha) + (oneMinusAlpha * destination.g);
+    result.b = (source.b * alpha) + (oneMinusAlpha * destination.b);
+    result.a = 0xff;
+
+    return(result);
+}
+
+bool8 rectOverlaps(Rect *rect1, Rect *rect2)
+{
+    return !(
+            rect2->x > (rect1->x + rect1->width) || (rect2->x + rect2->width) < rect1->x 
+            || (rect2->y + rect2->height) < rect1->y || rect2->y > (rect1->y + rect1->height)
+        );
+}
+
+bool8 rectOverlaps(ScreenRect *rect1, ScreenRect *rect2)
+{
+    return !(
+            rect2->x > (rect1->x + rect1->width) || (rect2->x + rect2->width) < rect1->x 
+            || (rect2->y + rect2->height) < rect1->y || rect2->y > (rect1->y + rect1->height)
+        );
 }
 
 void drawScreenRect(const ScreenRect &rect, const Size &screenSize, ColorRGBA32 color, ColorRGBA32 *buffer)
@@ -28,11 +57,13 @@ void drawScreenRect(const ScreenRect &rect, const Size &screenSize, ColorRGBA32 
                 // this pixel it's out of bounds
                 continue;
             }
+
+            buffer[ (y * screenSize.width) + x ] = blendByAlpha(buffer[ (y * screenSize.width) + x ], color);
             // TODO(pgm): Fake blending
-            if( color.a != 0x0 )
-            {
-                buffer[ (y * screenSize.width) + x ] = color;
-            }
+            // if( color.a != 0x0 )
+            // {
+            //     buffer[ (y * screenSize.width) + x ] = color;
+            // }
         }
     }
 }
@@ -72,12 +103,13 @@ void drawScreenRect(const ScreenRect &rect, const Size &screenSize, ColorRGBA32*
             {
                 // this pixel it's out of bounds
                 continue;
-            }
+            }            
+            buffer[ (y * screenSize.width) + x ] = blendByAlpha(buffer[ (y * screenSize.width) + x ], colors[row * rect.width + col]);
             // TODO(pgm): Fake blending
-            if( colors[row * rect.width + col].a != 0x0 )
-            {
-                buffer[ (y * screenSize.width) + x ] = colors[row * rect.width + col];
-            }
+            // if( colors[row * rect.width + col].a != 0 )
+            // {
+            //     buffer[ (y * screenSize.width) + x ] = colors[row * rect.width + col];
+            // }
         }
     }
 }

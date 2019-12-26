@@ -10,13 +10,6 @@ vendor/SDL2/**/lib/pkgconfig
 vendor/SDL2/**/lib/*.la
 vendor/SDL2/**/lib/libSDL2_test.a
 
-# SDL2_TTF ignores
-vendor/SDL2_TTF/*
-!vendor/SDL2_TTF/x86/
-!vendor/SDL2_TTF/x64/
-!vendor/SDL2_TTF/include/
-vendor/SDL2_TTF/**/lib/pkgconfig
-
 # project specific
 build
 libEngine2d/obj

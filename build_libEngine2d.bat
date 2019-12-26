@@ -1,5 +1,5 @@
 @echo off 
-set include_directories=-I"..\..\vendor\SDL2\include" -I"..\..\vendor\SDL2_Image\include" -I"..\..\engine2d\include"
+set include_directories=-I"..\..\vendor\SDL2\include" -I"..\..\engine2d\include"
 pushd ".\libEngine2d\obj"
     ::compilation to .o
     g++ -ggdb %include_directories% -c "..\src\win32_libEngine2d.cpp"

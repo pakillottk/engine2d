@@ -1,5 +1,5 @@
 #include "../include/engine2d/engine2d_layer.h"
-#include "engine2d_project_rect.h"
+#include "engine2d_rect.h"
 using namespace Engine2D;
 
 internal bool8 getTile(Tilemap *tilemap, u32 id, ColorRGBA32 *buffer)
@@ -56,8 +56,12 @@ internal void renderLayer(Layer *layer, ColorRGBA32 *buffer, Size *screenSize, S
             TileReference *tileRef = &layer->tiles[i];
             ScreenRect tileRect = { tileRef->worldPos.x, tileRef->worldPos.y, layerTilemap->tileSize.width, layerTilemap->tileSize.height };
             ScreenRect projectedRect = mapScreenRectToViewport( tileRect, *screenSize, *visibleRegion );
-            getTile(layerTilemap, tileRef->tileIndex, tilemapBuffer);
-            drawScreenRect( projectedRect, *screenSize, tilemapBuffer, buffer );
+            // only if is visible
+            if( rectOverlaps(&projectedRect, &viewport) ) 
+            {
+                getTile(layerTilemap, tileRef->tileIndex, tilemapBuffer);
+                drawScreenRect( projectedRect, *screenSize, tilemapBuffer, buffer );
+            }
         }
         free(tilemapBuffer);
     }
@@ -77,7 +81,12 @@ internal void renderLayer(Layer *layer, ColorRGBA32 *buffer, Size *screenSize, S
             Sprite *sprite = &layer->sprites[i];
             ScreenRect rect = spriteScreenRect( sprite );
             ScreenRect projectedRect = mapScreenRectToViewport( rect, *screenSize, *visibleRegion );
-            drawScreenRect( projectedRect, *screenSize, sprite->pixels, buffer );
+
+            // only if is visible
+            if( rectOverlaps(&projectedRect, &viewport) ) 
+            {
+                drawScreenRect( projectedRect, *screenSize, sprite->pixels, buffer );
+            }
         }
 
         // NOTE(pgm) DEBUG ONLY

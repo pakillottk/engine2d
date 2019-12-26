@@ -10,12 +10,12 @@ internal void makeTexts(EngineState *state, Layer *layer)
     layer->backgroundColor = { 0x0, 0x0, 0x0, 0x0 };
     layer->attributes.patternBackground = 0;
     layer->attributes.textLayer = 1;
-    strcpy(layer->font.font, "arial.ttf");
-    layer->font.fontSize = 12; 
+    strcpy(layer->font.font, "c:\\windows\\fonts\\times.ttf");
+    layer->font.fontSize = 36; 
     layer->textsCount = 2;
     layer->texts[0].screenNormalizedPosition = {0.5f, 0.5f};
     layer->texts[0].color = { 0xff, 0xff, 0xff, 0xff };
-    layer->texts[0].text = (char*)calloc(6, sizeof(char));
+    layer->texts[0].text = (char*)state->malloc(6 * sizeof(char));
     strcpy(layer->texts[0].text, "Hello");
 
     layer->texts[1].screenNormalizedPosition = {0.3f, 0.15f};
@@ -99,7 +99,7 @@ ENGINE2D_INITIALIZE_APPLICATION(Engine2D_InitializeApplication)
     // }
 
     layer = &state->layers[1];
-    layer->spriteCount = 1;
+    layer->spriteCount = 1;    
     loadImage("data/char.png", state, &layer->sprites[0].pixels, &layer->sprites[0].size);
 
     makeTexts(state, &state->layers[2]);
@@ -109,11 +109,16 @@ ENGINE2D_APPLICATION_UPDATE(Engine2D_ApplicationUpdate)
 {
     keep_alive_var u32 speed = 3; 
 
-    Sprite *sprite = &state->layers[1].sprites[0];
-    sprite->worldPosition.x -= input->arrows.left * speed;
-    sprite->worldPosition.x += input->arrows.right * speed;
-    sprite->worldPosition.y += input->arrows.up * speed;
-    sprite->worldPosition.y -= input->arrows.down * speed; 
+    // Sprite *sprite = &state->layers[1].sprites[0];
+    // sprite->worldPosition.x -= input->arrows.left * speed;
+    // sprite->worldPosition.x += input->arrows.right * speed;
+    // sprite->worldPosition.y += input->arrows.up * speed;
+    // sprite->worldPosition.y -= input->arrows.down * speed; 
+
+    state->visibleRegion.x -= input->arrows.left * speed;
+    state->visibleRegion.x += input->arrows.right * speed;
+    state->visibleRegion.y += input->arrows.up * speed;
+    state->visibleRegion.y -= input->arrows.down * speed; 
 
     // state->visibleRegion.x = sprite->worldPosition.x - state->visibleRegion.width * 0.5f;
     // state->visibleRegion.y = sprite->worldPosition.y - state->visibleRegion.height * 0.5f;

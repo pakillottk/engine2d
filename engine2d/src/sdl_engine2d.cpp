@@ -1,11 +1,9 @@
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_TTF.h>
 #include "../include/engine2d/application2d.h"
 #include "sdl_engine2d.h"
-#include "engine2d_project_rect.h"
 #include "engine2d_rect.cpp"
 #include "engine2d_sprites.cpp"
-#include "sdl_engine2d_text.cpp"
+#include "stb_engine2d_text.cpp"
 #include "engine2d_layer.cpp"
 using namespace Engine2D;
 
@@ -22,7 +20,6 @@ internal SDLContext makeSDLContext(EngineState *state, Size *screenSize)
     SDLContext context;
 
     SDL_Init(SDL_INIT_VIDEO);
-    TTF_Init();
 
     context.window = SDL_CreateWindow(
         state->appTitle, 
@@ -124,7 +121,6 @@ internal void releaseSDLContext(SDLContext *context)
     SDL_DestroyTexture(context->screen);
     SDL_DestroyRenderer(context->renderer);
     SDL_FreeFormat(context->format);
-    TTF_Quit();
     SDL_Quit();
     free(context->framebuffer);
     free(context->screen_buffer);
