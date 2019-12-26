@@ -5,7 +5,7 @@
 #include <Engine2D/Engine2D.h>
 using namespace Engine2D;
 
-internal void makeTexts(Layer *layer)
+internal void makeTexts(EngineState *state, Layer *layer)
 {
     layer->backgroundColor = { 0x0, 0x0, 0x0, 0x0 };
     layer->attributes.patternBackground = 0;
@@ -20,7 +20,7 @@ internal void makeTexts(Layer *layer)
 
     layer->texts[1].screenNormalizedPosition = {0.3f, 0.15f};
     layer->texts[1].color = { 0xff, 0xff, 0x00, 0xff };
-    layer->texts[1].text = (char*)calloc(9, sizeof(char));
+    layer->texts[1].text = (char*)state->malloc(9 * sizeof(char));
     strcpy(layer->texts[1].text, "Ayy lmao");
 }
 
@@ -78,7 +78,7 @@ ENGINE2D_INITIALIZE_APPLICATION(Engine2D_InitializeApplication)
 
     state->tilemapCount = 1;
     Tilemap *tilemap = &state->tilemaps[0];
-    loadImage("data/tileset.png", &tilemap->pixels, &tilemap->mapSize);
+    loadImage("data/tileset.png", state, &tilemap->pixels, &tilemap->mapSize);
     tilemap->tileSize = {32, 32};
 
     state->layerCount = 3;
@@ -86,7 +86,7 @@ ENGINE2D_INITIALIZE_APPLICATION(Engine2D_InitializeApplication)
     layer->tilesetId = 0;
     layer->attributes.useTilemap = true;
     layer->tileCount = 1;
-    layer->tiles = (TileReference*)calloc( layer->tileCount, sizeof(TileReference) );
+    layer->tiles = (TileReference*)state->malloc( layer->tileCount * sizeof(TileReference) );
 
     // TileReference *tile = layer->tiles;
     // for( u32 i = 0; i < 480; ++i )
@@ -100,9 +100,9 @@ ENGINE2D_INITIALIZE_APPLICATION(Engine2D_InitializeApplication)
 
     layer = &state->layers[1];
     layer->spriteCount = 1;
-    loadImage("data/char.png", &layer->sprites[0].pixels, &layer->sprites[0].size);
+    loadImage("data/char.png", state, &layer->sprites[0].pixels, &layer->sprites[0].size);
 
-    makeTexts(&state->layers[2]);
+    makeTexts(state, &state->layers[2]);
 }
 
 ENGINE2D_APPLICATION_UPDATE(Engine2D_ApplicationUpdate)

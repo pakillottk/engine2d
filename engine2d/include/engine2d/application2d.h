@@ -3,27 +3,10 @@
 #define APPLICATION_2D_H
 
 #include "engine2d_types.h"
-#include "engine2d_layer.h"
-#include "engine2d_tilemap.h"
-
-#define MAX_APP_TITLE_LENGTH 1024
-#define MAX_LAYER_COUNT 128
+#include "engine2d_state.h"
 
 namespace Engine2D
-{
-    struct EngineState 
-    {
-        char appTitle[MAX_APP_TITLE_LENGTH];
-        // TODO(pgm)
-        // Size screenSize; 
-        
-        ScreenRect visibleRegion;
-        Tilemap tilemaps[MAX_TILEMAP_COUNT];
-        u32 tilemapCount;
-        Layer layers[MAX_LAYER_COUNT];
-        u32 layerCount;
-    };
-
+{   
     struct UserInput
     {
         // TODO(pgm) This is a dummy input for initial experimentation

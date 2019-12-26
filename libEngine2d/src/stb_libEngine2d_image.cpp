@@ -3,7 +3,7 @@
 #include "../../vendor/STB_Image/stb_image.h"
 using namespace Engine2D;
 
-bool8 Engine2D::loadImage(const char *imgPath, ColorRGBA32** pixels, Size* size)
+bool8 Engine2D::loadImage(const char *imgPath, EngineState *state, ColorRGBA32** pixels, Size* size)
 {
     int w, h, channelCount;
     stbi_uc *imgData = stbi_load(imgPath, &w, &h, &channelCount, 0);
@@ -14,7 +14,7 @@ bool8 Engine2D::loadImage(const char *imgPath, ColorRGBA32** pixels, Size* size)
 
     size->width = w;
     size->height = h;
-    *pixels = (ColorRGBA32*)calloc( w * h, sizeof(ColorRGBA32) );
+    *pixels = (ColorRGBA32*)state->malloc( w * h * sizeof(ColorRGBA32) );
     stbi_uc *pixel = imgData;
     for( u32 i = 0; i < w * h; ++i )
     {
