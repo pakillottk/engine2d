@@ -44,7 +44,7 @@ internal SDLContext makeSDLContext(EngineState *state, Size *screenSize)
     return(context); 
 }
 
-inline bool8 updateInput(SDLContext *context, EngineState *state, UserInput *input)
+internal bool8 updateInput(SDLContext *context, EngineState *state, UserInput *input)
 {
     SDL_Event event;
     while( SDL_PollEvent(&event) )
@@ -73,16 +73,23 @@ inline bool8 updateInput(SDLContext *context, EngineState *state, UserInput *inp
         switch (key)
         {    
             case SDLK_LEFT:
-                input->arrows.left = context->keypressed;
+                input->buttons.left = context->keypressed;
             break;
             case SDLK_UP:
-                input->arrows.up = context->keypressed;
+                input->buttons.up = context->keypressed;
             break;
             case SDLK_RIGHT:
-                input->arrows.right = context->keypressed;
+                input->buttons.right = context->keypressed;
             break;
             case SDLK_DOWN:
-                input->arrows.down = context->keypressed;
+                input->buttons.down = context->keypressed;
+            break;
+
+            case SDLK_KP_PLUS:
+                input->buttons.zoomPlus = context->keypressed;
+            break;
+            case SDLK_KP_MINUS:
+                input->buttons.zoomMinus = context->keypressed;
             break;
 
             // TODO                
@@ -94,7 +101,7 @@ inline bool8 updateInput(SDLContext *context, EngineState *state, UserInput *inp
     return(false);
 }
 
-inline void render(SDLContext *context, EngineState *state, Size *screenSize)
+internal void render(SDLContext *context, EngineState *state, Size *screenSize)
 {
     // TODO(pgm)
     // blend the layer pixels into the framebuffer

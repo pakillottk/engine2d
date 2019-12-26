@@ -7,7 +7,6 @@
 #include "engine2d_tilemap.h"
 #include "engine2d_sprite.h"
 #include "engine2d_text.h"
-#include "engine2d_collision.h"
 
 #define MAX_SPRITE_COUNT 128
 #define MAX_TEXTS_COUNT 128
@@ -69,8 +68,6 @@ namespace Engine2D
                 byte useTilemap : 1;  
             };
         } attributes;
-
-        Collisions collisions;
     };
 
     inline void releaseLayer(Layer *layer)
@@ -96,7 +93,6 @@ namespace Engine2D
             {
                 free(layer->sprites[i].pixels);
             }
-            free(layer->collisions.CollisionData);
         }
     }
 }

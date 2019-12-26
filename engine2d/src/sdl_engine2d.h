@@ -14,8 +14,6 @@ struct SDLContext
     Engine2D::ColorRGBA32 *framebuffer;
     u32 *screen_buffer;
     bool8 keypressed;
-    real32 deltaTime;
-    real32 totalTime;
 };
 
 

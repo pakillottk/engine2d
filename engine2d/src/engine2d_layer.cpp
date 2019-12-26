@@ -22,7 +22,7 @@ internal bool8 getTile(Tilemap *tilemap, u32 id, ColorRGBA32 *buffer)
         }
     }
 
-    return(TRUE);
+    return(true);
 }
 
 internal void renderLayer(Layer *layer, ColorRGBA32 *buffer, Size *screenSize, ScreenRect *visibleRegion, Tilemap *tilemaps, u32 tilemapCount)
@@ -56,11 +56,11 @@ internal void renderLayer(Layer *layer, ColorRGBA32 *buffer, Size *screenSize, S
             TileReference *tileRef = &layer->tiles[i];
             ScreenRect tileRect = { tileRef->worldPos.x, tileRef->worldPos.y, layerTilemap->tileSize.width, layerTilemap->tileSize.height };
             ScreenRect projectedRect = mapScreenRectToViewport( tileRect, *screenSize, *visibleRegion );
-            // only if is visible
+            // only if its visible
             if( rectOverlaps(&projectedRect, &viewport) ) 
             {
                 getTile(layerTilemap, tileRef->tileIndex, tilemapBuffer);
-                drawScreenRect( projectedRect, *screenSize, tilemapBuffer, buffer );
+                drawScreenRect( projectedRect, layerTilemap->tileSize, *screenSize, tilemapBuffer, buffer );
             }
         }
         free(tilemapBuffer);
@@ -82,25 +82,11 @@ internal void renderLayer(Layer *layer, ColorRGBA32 *buffer, Size *screenSize, S
             ScreenRect rect = spriteScreenRect( sprite );
             ScreenRect projectedRect = mapScreenRectToViewport( rect, *screenSize, *visibleRegion );
 
-            // only if is visible
+            // only if its visible
             if( rectOverlaps(&projectedRect, &viewport) ) 
             {
-                drawScreenRect( projectedRect, *screenSize, sprite->pixels, buffer );
+                drawScreenRect( projectedRect, sprite->size, *screenSize, sprite->pixels, buffer );
             }
-        }
-
-        // NOTE(pgm) DEBUG ONLY
-        keep_alive_var ColorRGBA32 collisionColor { 0xff, 0x0, 0x0, 0xff }; 
-        for( u32 i = 0; i < layer->collisions.collisionCount; ++i )
-        {
-            ScreenRect colRect 
-            {
-                layer->collisions.CollisionData[i].screenPosition.x,
-                layer->collisions.CollisionData[i].screenPosition.y,
-                1,
-                1
-            };
-            drawScreenRect( colRect, *screenSize, collisionColor, buffer );
         }
     }
     

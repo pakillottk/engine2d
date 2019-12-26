@@ -134,6 +134,95 @@ void drawScreenRect(const ScreenRect &rect, const Size &screenSize, u32* colors,
     }
 }
 
+#define LERP(V1, V2, T) ((V1) + ((V2)-(V1)) * (T))
+#define BLERP(V1, V2, V3, V4, T, S) LERP(LERP(V1, V2, T), LERP(V3, V4, T), S)  
+
+internal ColorRGBA32 calculateColorBilinearLerp(ColorRGBA32 *colors, const Size &size, real32 rx, real32 ry)
+{
+    u32 x = (u32)rx;
+    u32 y = (u32)ry;
+
+    ColorRGBA32 color = colors[ y * size.width + x ];
+    if( x < size.width - 1 && y < size.height - 1  )
+    {
+        // not a corner
+        ColorRGBA32 p00 = color;
+        ColorRGBA32 p10 = colors[ y * size.width + (x+1) ];
+        ColorRGBA32 p01 = colors[ (y+1) * size.width + x ];
+        ColorRGBA32 p11 = colors[ (y+1) * size.width + (x+1) ];
+        for( char i = 0; i < 4; ++i )
+        {
+            color.color_rgba[i] = BLERP(p00.color_rgba[i], p10.color_rgba[i], p01.color_rgba[i], p11.color_rgba[i], rx - x, ry - y);
+        }
+    }
+    return(color);
+}
+
+void drawScreenRect(const ScreenRect &rect, const Size &realSize, const Size &screenSize, ColorRGBA32* colors, ColorRGBA32 *buffer)
+{
+    // TODO(pgm) for now use nearest pixel
+    int x, y;
+    real32 sampleX, sampleY;
+    real32 normalizedX, normalizedY;
+    for(unsigned row = 0; row < rect.height; ++row)
+    {
+        for(unsigned col = 0; col < rect.width; ++col)
+        {
+            x = rect.x + col;
+            y = row + rect.y;
+            // TODO(pgm): This can be optimized to get first the subrect that is in bounds
+            if( x < 0 || x >= screenSize.width || y < 0 || y >= screenSize.height )
+            {
+                // this pixel it's out of bounds
+                continue;
+            }
+            
+            normalizedX = real32(col) / real32(rect.width);
+            sampleX =  normalizedX * realSize.width;
+
+            normalizedY = real32(row) / real32(rect.height);
+            sampleY =  normalizedY * realSize.height;
+
+            // const ColorRGBA32 &color = colors[sampleY * realSize.width + sampleX];
+            const ColorRGBA32 &color = calculateColorBilinearLerp(colors, realSize, sampleX, sampleY);
+
+            buffer[ (y * screenSize.width) + x ] = blendByAlpha(buffer[ (y * screenSize.width) + x ], color);
+        }
+    }
+}
+
+void drawScreenRect(const ScreenRect &rect, const Size &realSize, const Size &screenSize, u32 *colors, u32 *buffer)
+{
+    // TODO(pgm) for now use nearest pixel
+    int x, y;
+    u32 sampleX, sampleY;
+    real32 normalizedX, normalizedY;
+    for(unsigned row = 0; row < rect.height; ++row)
+    {
+        for(unsigned col = 0; col < rect.width; ++col)
+        {
+            x = rect.x + col;
+            y = row + rect.y;
+            // TODO(pgm): This can be optimized to get first the subrect that is in bounds
+            if( x < 0 || x >= screenSize.width || y < 0 || y >= screenSize.height )
+            {
+                // this pixel it's out of bounds
+                continue;
+            }
+            
+            normalizedX = real32(col) / real32(rect.width);
+            sampleX =  normalizedX * realSize.width;
+
+            normalizedY = real32(row) / real32(rect.height);
+            sampleY =  normalizedY * realSize.height;
+
+            const u32 &color = colors[sampleY * realSize.width + sampleX];
+
+            buffer[ (y * screenSize.width) + x ] = blendByAlpha(buffer[ (y * screenSize.width) + x ], color);
+        }
+    }
+}
+
 void drawScreenRectMasked(const ScreenRect &rect, const Size &screenSize, const ColorRGBA32 &color, ColorRGBA32* mask, ColorRGBA32 *buffer)
 {
     int x, y;
@@ -221,11 +310,11 @@ void scaleRect(Rect &rect, real32 scale)
 ScreenRect mapRectToScreen(const Rect &rect, const Size &screenSize, const Rect &gameRect)
 {
     ScreenRect result;
+    result.width = NORMALIZE_TO_RANGE(rect.width, 0, gameRect.width) * screenSize.width;
+    result.height = NORMALIZE_TO_RANGE(rect.width, 0, gameRect.height) * screenSize.height;
     // TODO(pgm) no resizes for now
-    // result.width = NORMALIZE_TO_RANGE(rect.width, 0, gameRect.width) * screenSize.width;
-    // result.height = NORMALIZE_TO_RANGE(rect.width, 0, gameRect.height) * screenSize.height;
-    result.width = rect.width;
-    result.height = rect.height;
+    // result.width = rect.width;
+    // result.height = rect.height;
     result.x = NORMALIZE_TO_RANGE(rect.x, gameRect.x, gameRect.x + gameRect.width) * screenSize.width;
     result.y = screenSize.height - result.height - NORMALIZE_TO_RANGE(rect.y, gameRect.y, gameRect.y + gameRect.height) * screenSize.height;
 

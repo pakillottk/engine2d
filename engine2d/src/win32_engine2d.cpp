@@ -2,8 +2,8 @@
 #include "engine2d.cpp"
 #include <windows.h>
 
-#define SCREEN_WIDTH 640
-#define SCREEN_HEIGHT 480
+#define SCREEN_WIDTH 800
+#define SCREEN_HEIGHT 600
 #ifndef NULL
     #define NULL 0
 #endif
@@ -16,8 +16,6 @@
 
 #include "win32_engine2d_io.cpp"
 #include "sdl_engine2d.cpp"
-#include "../include/engine2d/engine2d_collision.h"
-#include "engine2d_collision.cpp"
 
 internal FILETIME Win32_GetLastWriteTime(const char *filename)
 {
@@ -111,26 +109,31 @@ int WINAPI WinMain(HINSTANCE hInstance,
                    LPSTR lpCmdLine,
                    int nCmdShow )
 {
+    LARGE_INTEGER perfCounterFreq;
+    QueryPerformanceFrequency(&perfCounterFreq);
+
     AppCode appCode = loadApp(appDll);
     Size screenSize { SCREEN_WIDTH, SCREEN_HEIGHT };
     
-    // TODO(pgm) a shared file should exist where these are initialized correctly
-    UserInput input;
-    input.arrows.directions = 0;
+    UserInput input = {};    
     EngineState state = {};
     initializeEngineState(&state);
     appCode.initializeApp(&state);
     
     // TODO(pgm) Handle window resizes
+    real32 deltaTime = 0, totalTime = 0;
     SDLContext context = makeSDLContext(&state, &screenSize);
     Sprite **layerSpriteMap = (Sprite**)calloc(screenSize.width * screenSize.height, sizeof(Sprite*));
     bool8 exit = false;
+
+    LARGE_INTEGER startCounter, endCounter;
+    QueryPerformanceCounter(&startCounter);
+
     while( true )
-    {
+    {       
         #if HOT_RELOAD
             attemptHotReload(appDll, appCode);
         #endif
-
 
         // check for user inputs
         exit = updateInput(&context, &state, &input);
@@ -139,25 +142,25 @@ int WINAPI WinMain(HINSTANCE hInstance,
             break;
         }
         // update the state
-        appCode.updateApp(context.deltaTime, context.totalTime, &state, &input);
-        
-        // TODO(pgm) Just for debugging
-        // check for collisions
-        // for( u32 i = 0; i < state.layerCount; ++i )
-        // {
-        //     if( state.layers[i].attributes.hidden || state.layers[i].attributes.textLayer )
-        //     {
-        //         continue;
-        //     }
+        appCode.updateApp(deltaTime, totalTime, &state, &input);
 
-        //     memset( layerSpriteMap, 0, sizeof(Sprite*)*screenSize.width*screenSize.height );
-        //     free(state.layers[i].collisions.CollisionData);
-        //     state.layers[i].collisions = calculateCollisions( &state.layers[i], layerSpriteMap, &screenSize, &state.visibleRegion );
-        //     // TODO(pgm) let the app handle collisions?
-        // }
-        
         // render the new state
         render(&context, &state, &screenSize);
+
+        QueryPerformanceCounter(&endCounter);
+
+        u64 timeElapsed = endCounter.QuadPart - startCounter.QuadPart;
+        deltaTime = real64(timeElapsed) / real64(perfCounterFreq.QuadPart);
+        totalTime += deltaTime;
+
+        // u32 frameMs = (u32)((timeElapsed * 1000) / perfCounterFreq.QuadPart);
+        // u32 fps = perfCounterFreq.QuadPart / timeElapsed;
+
+        // char buffer[512];
+        // wsprintf(buffer, "ms/frame: %d ms / FPS: %d\n", frameMs, fps);
+        // OutputDebugStringA(buffer);
+
+        startCounter = endCounter;
     }
     
     releaseSDLContext(&context);

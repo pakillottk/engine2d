@@ -44,7 +44,7 @@ internal void makeCollidingSprites( EngineState *state )
 ENGINE2D_INITIALIZE_APPLICATION(Engine2D_InitializeApplication)
 {
     strcpy(state->appTitle, "DummyApp"); 
-    state->visibleRegion = { 0, 0, 640, 480 };
+    state->visibleRegion = { 0, 0, 800, 600 };
 
     // state->layers[0].backgroundPattern = (ColorRGBA32*)calloc(100, sizeof(ColorRGBA32));
     // for(u32 i = 0; i < 100; ++i)
@@ -107,7 +107,7 @@ ENGINE2D_INITIALIZE_APPLICATION(Engine2D_InitializeApplication)
 
 ENGINE2D_APPLICATION_UPDATE(Engine2D_ApplicationUpdate)
 {
-    keep_alive_var u32 speed = 3; 
+    keep_alive_var u32 speed = 60; 
 
     // Sprite *sprite = &state->layers[1].sprites[0];
     // sprite->worldPosition.x -= input->arrows.left * speed;
@@ -115,10 +115,15 @@ ENGINE2D_APPLICATION_UPDATE(Engine2D_ApplicationUpdate)
     // sprite->worldPosition.y += input->arrows.up * speed;
     // sprite->worldPosition.y -= input->arrows.down * speed; 
 
-    state->visibleRegion.x -= input->arrows.left * speed;
-    state->visibleRegion.x += input->arrows.right * speed;
-    state->visibleRegion.y += input->arrows.up * speed;
-    state->visibleRegion.y -= input->arrows.down * speed; 
+    state->visibleRegion.x -= input->buttons.left * speed * deltaTime;
+    state->visibleRegion.x += input->buttons.right * speed * deltaTime;
+    state->visibleRegion.y += input->buttons.up * speed * deltaTime;
+    state->visibleRegion.y -= input->buttons.down * speed * deltaTime; 
+
+    state->visibleRegion.width -= input->buttons.zoomPlus;
+    state->visibleRegion.height -= input->buttons.zoomPlus;
+    state->visibleRegion.width += input->buttons.zoomMinus;
+    state->visibleRegion.height += input->buttons.zoomMinus;
 
     // state->visibleRegion.x = sprite->worldPosition.x - state->visibleRegion.width * 0.5f;
     // state->visibleRegion.y = sprite->worldPosition.y - state->visibleRegion.height * 0.5f;

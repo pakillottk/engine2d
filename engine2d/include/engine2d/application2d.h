@@ -12,17 +12,17 @@ namespace Engine2D
         // TODO(pgm) This is a dummy input for initial experimentation
         union 
         {
-            byte directions;
+            byte pressed;
             struct
             {
                 byte left : 1;
                 byte up : 1;
                 byte right : 1;
                 byte down : 1;
-                // unused but we can't make less than 1 byte
-                byte padding : 4;
+                byte zoomPlus : 1;
+                byte zoomMinus : 1;                
             };
-        } arrows;
+        } buttons;
     };
 }
 

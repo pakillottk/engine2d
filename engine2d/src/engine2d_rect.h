@@ -11,6 +11,8 @@ void drawScreenRect(const Engine2D::ScreenRect &rect, const Engine2D::Size &scre
 void drawScreenRect(const Engine2D::ScreenRect &rect, const Engine2D::Size &screenSize, u32 color, u32 *buffer);
 void drawScreenRect(const Engine2D::ScreenRect &rect, const Engine2D::Size &screenSize, Engine2D::ColorRGBA32* colors, Engine2D::ColorRGBA32 *buffer);
 void drawScreenRect(const Engine2D::ScreenRect &rect, const Engine2D::Size &screenSize, u32* colors, u32 *buffer);
+void drawScreenRect(const Engine2D::ScreenRect &rect, const Engine2D::Size &realSize, const Engine2D::Size &screenSize, Engine2D::ColorRGBA32* colors, Engine2D::ColorRGBA32 *buffer);
+void drawScreenRect(const Engine2D::ScreenRect &rect, const Engine2D::Size &realSize, const Engine2D::Size &screenSize, u32 *colors, u32 *buffer);
 
 void drawScreenRectMasked(const Engine2D::ScreenRect &rect, const Engine2D::Size &screenSize, const Engine2D::ColorRGBA32 &color, Engine2D::ColorRGBA32* mask, Engine2D::ColorRGBA32 *buffer);
 
