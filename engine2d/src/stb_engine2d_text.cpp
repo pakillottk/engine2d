@@ -67,18 +67,25 @@ void renderText(FontConfig *font, Text *text, Size *screenSize, ColorRGBA32* buf
     size_t len = strlen(text->text);
     for( size_t i = 0; i < len; ++i )    
     {
-        Vec2i size = renderChar(
-            text->text[i], 
-            scale, 
-            &text->color, 
-            &text->screenNormalizedPosition, 
-            ascent, 
-            accumOffset.x, 
-            &stbFont, 
-            screenSize, 
-            buffer
-        );
-        accumOffset.x += size.x + 2;
+        if( text->text[i] == ' ' )
+        {
+            accumOffset.x += 6;
+        }
+        else
+        {
+            Vec2i size = renderChar(
+                text->text[i], 
+                scale, 
+                &text->color, 
+                &text->screenNormalizedPosition, 
+                ascent, 
+                accumOffset.x, 
+                &stbFont, 
+                screenSize, 
+                buffer
+            );
+            accumOffset.x += size.x + 2;
+        }
     }
 
     free(fontFileData);

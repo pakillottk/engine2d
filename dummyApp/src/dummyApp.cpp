@@ -23,7 +23,7 @@ internal void makeTexts(EngineState *state, Layer *layer)
     layer->attributes.patternBackground = 0;
     layer->attributes.textLayer = 1;
     strcpy(layer->font.font, "c:\\windows\\fonts\\times.ttf");
-    layer->font.fontSize = 36; 
+    layer->font.fontSize = 24; 
     layer->textsCount = 2;
     layer->texts[0].screenNormalizedPosition = {0.5f, 0.5f};
     layer->texts[0].color = { 0xff, 0xff, 0xff, 0xff };
@@ -54,30 +54,32 @@ internal void makeCollidingSprites( EngineState *state )
 }
 
 // ENGINE2D_INITIALIZE_APPLICATION(Engine2D_InitializeApplication)
-DummyApp::DummyApp(EngineState *state)
+DummyApp::DummyApp(EngineState *state): App2D(state)
 {
     strcpy(state->appTitle, "DummyApp"); 
-    state->visibleRegion = { 0, 0, 800, 600 };
+    state->visibleRegion = { 0, 0, 640, 320 };
 
     state->layers[0].backgroundColor = { 0x66, 0x66, 0x66, 0xff };
+    state->layers[0].spriteCount = 1;
+    loadImage("data/bg.jpg", state, &state->layers[0].sprites[0].pixels, &state->layers[0].sprites[0].size);
 
     state->tilemapCount = 1;
     Tilemap *tilemap = &state->tilemaps[0];
     loadImage("data/tileset.png", state, &tilemap->pixels, &tilemap->mapSize);
     tilemap->tileSize = {32, 32};
 
-    state->layerCount = 2;
-    Layer *layer = &state->layers[0];
+    state->layerCount = 4;
+    Layer *layer = &state->layers[1];
     layer->tilesetId = 0;
     layer->attributes.useTilemap = true;
     layer->tileCount = 1;
     layer->tiles = (TileReference*)state->malloc( layer->tileCount * sizeof(TileReference) );
 
-    layer = &state->layers[1];
+    layer = &state->layers[2];
     layer->spriteCount = 1;    
     loadImage("data/char.png", state, &layer->sprites[0].pixels, &layer->sprites[0].size);
 
-    // makeTexts(state, &state->layers[2]);
+    makeTexts(state, &state->layers[3]);
 }
 
 // ENGINE2D_APPLICATION_UPDATE(Engine2D_ApplicationUpdate)

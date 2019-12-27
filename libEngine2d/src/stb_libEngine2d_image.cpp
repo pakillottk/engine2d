@@ -23,6 +23,11 @@ bool8 Engine2D::loadImage(const char *imgPath, EngineState *state, ColorRGBA32**
             (*pixels)[i].color_rgba[c] = (u8)(*pixel);
             ++pixel;
         }
+        if( channelCount < 4 )
+        {
+            // set the alpha to 255
+            (*pixels)[i].a = 0xff;
+        }
     }
 
     stbi_image_free(imgData);

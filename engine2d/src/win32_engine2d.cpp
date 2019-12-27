@@ -136,7 +136,10 @@ int WINAPI WinMain(HINSTANCE hInstance,
     while( true )
     {       
         #if HOT_RELOAD
-            attemptHotReload(appDll, appCode);
+            if( attemptHotReload(appDll, appCode) )
+            {
+                appCode.initializeApp(&state);
+            }
         #endif
 
         // check for user inputs
@@ -167,6 +170,11 @@ int WINAPI WinMain(HINSTANCE hInstance,
         startCounter = endCounter;
     }
     
+    unloadApp(appCode);
+    #if HOT_RELOAD
+        DeleteFileA(liveDll);
+    #endif
+
     releaseSDLContext(&context);
     for( u32 i = 0; i < state.layerCount; ++i )
     {

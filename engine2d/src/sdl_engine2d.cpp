@@ -118,11 +118,17 @@ internal bool8 updateInput(SDLContext *context, Size *screenSize, EngineState *s
             break;
 
             case SDLK_f:
-                SDL_SetWindowFullscreen(context->window, SDL_WINDOW_FULLSCREEN);
+                if( context->keypressed )
+                {
+                    SDL_SetWindowFullscreen(context->window, SDL_WINDOW_FULLSCREEN);
+                }
             break;
 
             case SDLK_w:
-                SDL_SetWindowFullscreen(context->window, 0);
+                if( context->keypressed )
+                {
+                    SDL_SetWindowFullscreen(context->window, 0);    
+                }
             break;
 
             // TODO                
