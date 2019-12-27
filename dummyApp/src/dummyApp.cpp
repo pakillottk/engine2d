@@ -9,7 +9,7 @@ using namespace Engine2D;
 class DummyApp : public App2D
 {
 public:
-    DummyApp(Engine2D::EngineState *state);    
+    void initialize(Engine2D::EngineState *state);
     void update(real32 deltaTime, real32 totalTime, Engine2D::EngineState *state, Engine2D::UserInput *input);
 };
 
@@ -54,7 +54,7 @@ internal void makeCollidingSprites( EngineState *state )
 }
 
 // ENGINE2D_INITIALIZE_APPLICATION(Engine2D_InitializeApplication)
-DummyApp::DummyApp(EngineState *state): App2D(state)
+void DummyApp::initialize(EngineState *state)
 {
     strcpy(state->appTitle, "DummyApp"); 
     state->visibleRegion = { 0, 0, 640, 320 };

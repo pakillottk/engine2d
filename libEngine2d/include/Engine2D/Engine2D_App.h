@@ -8,11 +8,7 @@ namespace Engine2D
     class App2D
     {
     public:
-        App2D(Engine2D::EngineState *state)
-        {}
-        ~App2D()
-        {}
-        
+        virtual void initialize(Engine2D::EngineState *state) = 0;        
         virtual void update(real32 deltaTime, real32 totalTime, Engine2D::EngineState *state, Engine2D::UserInput *input) = 0;
         virtual void quit(Engine2D::EngineState *state)
         {}

@@ -15,8 +15,17 @@ extern "C"
 {
     ENGINE2D_INITIALIZE_APPLICATION(Engine2D_InitializeApplication)
     {
-        APP_CLASS *app = new APP_CLASS(state);
-        state->userData = app;
+        APP_CLASS *app;
+        if( state->userData == NULL )
+        {
+            app = new APP_CLASS();
+            state->userData = app;
+        }
+        else
+        {
+            app = (APP_CLASS*)state->userData;
+        }
+        app->initialize(state);
     }
 
     ENGINE2D_APPLICATION_UPDATE(Engine2D_ApplicationUpdate)
