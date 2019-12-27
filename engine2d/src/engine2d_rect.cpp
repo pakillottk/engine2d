@@ -311,7 +311,7 @@ ScreenRect mapRectToScreen(const Rect &rect, const Size &screenSize, const Rect 
 {
     ScreenRect result;
     result.width = NORMALIZE_TO_RANGE(rect.width, 0, gameRect.width) * screenSize.width;
-    result.height = NORMALIZE_TO_RANGE(rect.width, 0, gameRect.height) * screenSize.height;
+    result.height = NORMALIZE_TO_RANGE(rect.height, 0, gameRect.height) * screenSize.height;
     // TODO(pgm) no resizes for now
     // result.width = rect.width;
     // result.height = rect.height;
