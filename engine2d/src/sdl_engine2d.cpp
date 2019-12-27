@@ -27,9 +27,9 @@ internal SDLContext makeSDLContext(EngineState *state, Size *screenSize)
         SDL_WINDOWPOS_CENTERED, 
         screenSize->width, 
         screenSize->height, 
-        SDL_WINDOW_OPENGL
+        SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE
     );
-    context.renderer = SDL_CreateRenderer(context.window, 0, SDL_RENDERER_ACCELERATED);
+    context.renderer = SDL_CreateRenderer(context.window, 0, SDL_RENDERER_SOFTWARE);
     context.format = SDL_AllocFormat(SDL_PIXELFORMAT_RGBA32);
     context.screen = SDL_CreateTexture(
                             context.renderer, 
@@ -44,7 +44,7 @@ internal SDLContext makeSDLContext(EngineState *state, Size *screenSize)
     return(context); 
 }
 
-internal bool8 updateInput(SDLContext *context, EngineState *state, UserInput *input)
+internal bool8 updateInput(SDLContext *context, Size *screenSize, EngineState *state, UserInput *input)
 {
     SDL_Event event;
     while( SDL_PollEvent(&event) )
@@ -56,6 +56,31 @@ internal bool8 updateInput(SDLContext *context, EngineState *state, UserInput *i
                 return(true);
             break;
             
+            case SDL_WINDOWEVENT:
+                if( event.window.event == SDL_WINDOWEVENT_RESIZED )
+                {
+                    screenSize->width = event.window.data1;
+                    screenSize->height = event.window.data2;
+
+                    // free the buffers
+                    free(context->framebuffer);
+                    free(context->screen_buffer);
+                    SDL_DestroyTexture(context->screen);
+
+                    // realloc buffers
+                    context->screen = SDL_CreateTexture(
+                            context->renderer, 
+                            context->format->format, 
+                            SDL_TEXTUREACCESS_STREAMING, 
+                            screenSize->width, 
+                            screenSize->height 
+                        );
+                    context->framebuffer = (ColorRGBA32*)calloc(screenSize->width * screenSize->height, sizeof(ColorRGBA32));
+                    context->screen_buffer = (u32*)calloc(screenSize->width * screenSize->height, sizeof(u32));
+
+                }
+            break;
+
             case SDL_KEYDOWN:
                 context->keypressed =  true;
             break;
@@ -92,6 +117,14 @@ internal bool8 updateInput(SDLContext *context, EngineState *state, UserInput *i
                 input->buttons.zoomMinus = context->keypressed;
             break;
 
+            case SDLK_f:
+                SDL_SetWindowFullscreen(context->window, SDL_WINDOW_FULLSCREEN);
+            break;
+
+            case SDLK_w:
+                SDL_SetWindowFullscreen(context->window, 0);
+            break;
+
             // TODO                
             default:
                 break;
@@ -103,7 +136,6 @@ internal bool8 updateInput(SDLContext *context, EngineState *state, UserInput *i
 
 internal void render(SDLContext *context, EngineState *state, Size *screenSize)
 {
-    // TODO(pgm)
     // blend the layer pixels into the framebuffer
     memset(context->framebuffer, 0, sizeof(ColorRGBA32)*screenSize->width*screenSize->height);
     for(i32 i = 0; i < state->layerCount; ++i)
@@ -116,10 +148,7 @@ internal void render(SDLContext *context, EngineState *state, Size *screenSize)
     SDL_UpdateTexture(context->screen, NULL, context->screen_buffer, screenSize->width * sizeof(u32));
     SDL_RenderClear(context->renderer);
     SDL_RenderCopy(context->renderer, context->screen, NULL, NULL); 
-    SDL_RenderPresent(context->renderer);
-
-    // TODO(pgm) calculate delta time and so on
-    SDL_Delay(16);            
+    SDL_RenderPresent(context->renderer);   
 }
 
 internal void releaseSDLContext(SDLContext *context)

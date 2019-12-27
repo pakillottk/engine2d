@@ -2,8 +2,20 @@
 #include <string.h>
 #include <stdlib.h>
 #include <engine2d/application2d.h>
-#include <Engine2D/Engine2D.h>
+
+#include <Engine2D/Engine2D_App.h>
 using namespace Engine2D;
+
+class DummyApp : public App2D
+{
+public:
+    DummyApp(Engine2D::EngineState *state);    
+    void update(real32 deltaTime, real32 totalTime, Engine2D::EngineState *state, Engine2D::UserInput *input);
+};
+
+#define USE_OOP
+#define APP_CLASS DummyApp
+#include <Engine2D/Engine2D.h>
 
 internal void makeTexts(EngineState *state, Layer *layer)
 {
@@ -41,71 +53,35 @@ internal void makeCollidingSprites( EngineState *state )
     memset(sp1->pixels, 0x00ff00ff, sizeof(ColorRGBA32) * 100);
 }
 
-ENGINE2D_INITIALIZE_APPLICATION(Engine2D_InitializeApplication)
+// ENGINE2D_INITIALIZE_APPLICATION(Engine2D_InitializeApplication)
+DummyApp::DummyApp(EngineState *state)
 {
     strcpy(state->appTitle, "DummyApp"); 
     state->visibleRegion = { 0, 0, 800, 600 };
 
-    // state->layers[0].backgroundPattern = (ColorRGBA32*)calloc(100, sizeof(ColorRGBA32));
-    // for(u32 i = 0; i < 100; ++i)
-    // {
-    //     state->layers[0].backgroundPattern[i].r = i+50;
-    //     state->layers[0].backgroundPattern[i].g = i+50;
-    //     state->layers[0].backgroundPattern[i].b = i+50;
-    //     state->layers[0].backgroundPattern[i].a = 0xff;
-    // }
-    // state->layers[0].patternSize = { 10, 10};
-    // state->layers[0].attributes.patternBackground = 0;
-
-    // state->layers[0].spriteCount = 1;
-    // state->layers[0].sprites[0].pixels = (ColorRGBA32*)calloc(100, sizeof(ColorRGBA32));
-    // for(u32 i = 0; i < 100; ++i)
-    // {
-    //     state->layers[0].sprites[0].pixels[i].r = 0xff;
-    // }
-    // state->layers[0].sprites[0].size = { 10, 10 };
-    // state->layers[0].sprites[0].worldPosition = { 0, 0 };
-
     state->layers[0].backgroundColor = { 0x66, 0x66, 0x66, 0xff };
-    // state->layerCount = 1;
-    // state->layers[0].spriteCount = 1;
-    // state->layers[0].sprites[0].worldPosition = { 0, 0 };
-    // loadSpriteFromImg("data/test.bmp", &state->layers[0].sprites[0]);
-
-    // state->layerCount = 2;
-    // makeCollidingSprites(state);
-    // makeTexts(&state->layers[1]);
 
     state->tilemapCount = 1;
     Tilemap *tilemap = &state->tilemaps[0];
     loadImage("data/tileset.png", state, &tilemap->pixels, &tilemap->mapSize);
     tilemap->tileSize = {32, 32};
 
-    state->layerCount = 3;
+    state->layerCount = 2;
     Layer *layer = &state->layers[0];
     layer->tilesetId = 0;
     layer->attributes.useTilemap = true;
     layer->tileCount = 1;
     layer->tiles = (TileReference*)state->malloc( layer->tileCount * sizeof(TileReference) );
 
-    // TileReference *tile = layer->tiles;
-    // for( u32 i = 0; i < 480; ++i )
-    // {
-    //     for( u32 j = 0; j < 640; ++j )
-    //     {
-    //         tile->worldPos = { j*32, i*32 };
-    //         ++tile;
-    //     }
-    // }
-
     layer = &state->layers[1];
     layer->spriteCount = 1;    
     loadImage("data/char.png", state, &layer->sprites[0].pixels, &layer->sprites[0].size);
 
-    makeTexts(state, &state->layers[2]);
+    // makeTexts(state, &state->layers[2]);
 }
 
-ENGINE2D_APPLICATION_UPDATE(Engine2D_ApplicationUpdate)
+// ENGINE2D_APPLICATION_UPDATE(Engine2D_ApplicationUpdate)
+void DummyApp::update(real32 deltaTime, real32 totalTime, EngineState *state, UserInput *input)
 {
     keep_alive_var u32 speed = 60; 
 
@@ -128,3 +104,10 @@ ENGINE2D_APPLICATION_UPDATE(Engine2D_ApplicationUpdate)
     // state->visibleRegion.x = sprite->worldPosition.x - state->visibleRegion.width * 0.5f;
     // state->visibleRegion.y = sprite->worldPosition.y - state->visibleRegion.height * 0.5f;
 }
+
+#if 0
+ENGINE2D_APPLICATION_UPDATE(Engine2D_QuitApplication)
+{
+    // TODO
+}
+#endif

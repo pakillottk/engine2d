@@ -20,7 +20,7 @@ typedef ENGINE2D_FREE(engine2d_free);
 namespace Engine2D
 {
     struct EngineState 
-    {
+    {        
         char appTitle[MAX_APP_TITLE_LENGTH];
         // TODO(pgm)
         // Size screenSize;     
@@ -33,6 +33,9 @@ namespace Engine2D
         // callbacks to the engine
         engine2d_alloc *malloc;
         engine2d_free  *free;
+
+        // give a chance to the user to alloc custom data
+        void *userData;
     };
 }
 

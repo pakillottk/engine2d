@@ -38,6 +38,7 @@ struct AppCode
     FILETIME lastWriteTime;
     engine2d_initializeApplication *initializeApp;
     engine2d_applicationUpdate *updateApp;
+    engine2d_quitApplication *quitApp;
 };
 
 // used for hot reload
@@ -60,13 +61,15 @@ internal AppCode loadApp(const char *targetFilename)
     {
         appCode.initializeApp = (engine2d_initializeApplication*)GetProcAddress(appCode.dllHandle, "Engine2D_InitializeApplication");
         appCode.updateApp = (engine2d_applicationUpdate*)GetProcAddress(appCode.dllHandle, "Engine2D_ApplicationUpdate");
-        appCode.isValid = appCode.initializeApp != NULL && appCode.updateApp != NULL;
+        appCode.quitApp = (engine2d_quitApplication*)GetProcAddress(appCode.dllHandle, "Engine2D_QuitApplication");
+        appCode.isValid = appCode.initializeApp != NULL && appCode.updateApp != NULL && appCode.quitApp != NULL;
     }
 
     if( !appCode.isValid )
     {
         appCode.initializeApp = initializeAppStub;
         appCode.updateApp  = applicationUpdateStub;
+        appCode.quitApp = quitApplicationStub;
     }
 
     return appCode;
@@ -79,6 +82,7 @@ internal void unloadApp(AppCode &app)
         app.isValid = 0;
         app.initializeApp = initializeAppStub;
         app.updateApp  = applicationUpdateStub;
+        app.quitApp = quitApplicationStub;
         FreeLibrary( app.dllHandle );
     }
 }
@@ -136,7 +140,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
         #endif
 
         // check for user inputs
-        exit = updateInput(&context, &state, &input);
+        exit = updateInput(&context, &screenSize, &state, &input);
         if( exit )
         {
             break;

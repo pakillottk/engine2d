@@ -38,6 +38,12 @@ typedef ENGINE2D_APPLICATION_UPDATE(engine2d_applicationUpdate);
 ENGINE2D_APPLICATION_UPDATE(applicationUpdateStub)
 {}
 
+// TODO(pgm) This shouldn't live here?
+#define ENGINE2D_QUIT_APPLICATION(name) void name(Engine2D::EngineState *state)
+typedef ENGINE2D_QUIT_APPLICATION(engine2d_quitApplication);
+ENGINE2D_QUIT_APPLICATION(quitApplicationStub)
+{}
+
 // Code that the engine calls
 #ifdef __cplusplus
 extern "C" {
@@ -45,6 +51,7 @@ extern "C" {
 
 ENGINE2D_INITIALIZE_APPLICATION(Engine2D_InitializeApplication);
 ENGINE2D_APPLICATION_UPDATE(Engine2D_ApplicationUpdate);
+ENGINE2D_APPLICATION_UPDATE(Engine2D_QuitApplication);
 
 #ifdef __cplusplus
 }
